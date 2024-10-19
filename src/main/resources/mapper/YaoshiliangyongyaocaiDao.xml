@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.YaoshiliangyongyaocaiDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.yaoshiliangyongyaocai_uuid_number as yaoshiliangyongyaocaiUuidNumber
+        ,a.yaoshiliangyongyaocai_name as yaoshiliangyongyaocaiName
+        ,a.yaoshiliangyongyaocai_photo as yaoshiliangyongyaocaiPhoto
+        ,a.yaoshiliangyongyaocai_types as yaoshiliangyongyaocaiTypes
+        ,a.yaoshiliangyongyaocai_gongxiao as yaoshiliangyongyaocaiGongxiao
+        ,a.yaoshiliangyongyaocai_clicknum as yaoshiliangyongyaocaiClicknum
+        ,a.yaoshiliangyongyaocai_content as yaoshiliangyongyaocaiContent
+        ,a.shangxia_types as shangxiaTypes
+        ,a.yaoshiliangyongyaocai_delete as yaoshiliangyongyaocaiDelete
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.YaoshiliangyongyaocaiView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+
+        FROM yaoshiliangyongyaocai  a
+
+        <where>
+            <if test="params.ids != null">
+                and a.id in
+                <foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+            <if test=" params.yaoshiliangyongyaocaiUuidNumber != '' and params.yaoshiliangyongyaocaiUuidNumber != null and params.yaoshiliangyongyaocaiUuidNumber != 'null' ">
+                and a.yaoshiliangyongyaocai_uuid_number like CONCAT('%',#{params.yaoshiliangyongyaocaiUuidNumber},'%')
+            </if>
+            <if test=" params.yaoshiliangyongyaocaiName != '' and params.yaoshiliangyongyaocaiName != null and params.yaoshiliangyongyaocaiName != 'null' ">
+                and a.yaoshiliangyongyaocai_name like CONCAT('%',#{params.yaoshiliangyongyaocaiName},'%')
+            </if>
+            <if test="params.yaoshiliangyongyaocaiTypes != null and params.yaoshiliangyongyaocaiTypes != ''">
+                and a.yaoshiliangyongyaocai_types = #{params.yaoshiliangyongyaocaiTypes}
+            </if>
+            <if test=" params.yaoshiliangyongyaocaiGongxiao != '' and params.yaoshiliangyongyaocaiGongxiao != null and params.yaoshiliangyongyaocaiGongxiao != 'null' ">
+                and a.yaoshiliangyongyaocai_gongxiao like CONCAT('%',#{params.yaoshiliangyongyaocaiGongxiao},'%')
+            </if>
+            <if test="params.yaoshiliangyongyaocaiClicknumStart != null and params.yaoshiliangyongyaocaiClicknumStart != ''">
+                <![CDATA[  and a.yaoshiliangyongyaocai_clicknum >= #{params.yaoshiliangyongyaocaiClicknumStart}   ]]>
+            </if>
+            <if test="params.yaoshiliangyongyaocaiClicknumEnd != null and params.yaoshiliangyongyaocaiClicknumEnd != ''">
+                <![CDATA[  and a.yaoshiliangyongyaocai_clicknum <= #{params.yaoshiliangyongyaocaiClicknumEnd}   ]]>
+            </if>
+             <if test="params.yaoshiliangyongyaocaiClicknum != null and params.yaoshiliangyongyaocaiClicknum != ''">
+                and a.yaoshiliangyongyaocai_clicknum = #{params.yaoshiliangyongyaocaiClicknum}
+             </if>
+            <if test=" params.yaoshiliangyongyaocaiContent != '' and params.yaoshiliangyongyaocaiContent != null and params.yaoshiliangyongyaocaiContent != 'null' ">
+                and a.yaoshiliangyongyaocai_content like CONCAT('%',#{params.yaoshiliangyongyaocaiContent},'%')
+            </if>
+            <if test="params.shangxiaTypes != null and params.shangxiaTypes != ''">
+                and a.shangxia_types = #{params.shangxiaTypes}
+            </if>
+            <if test="params.yaoshiliangyongyaocaiDeleteStart != null and params.yaoshiliangyongyaocaiDeleteStart != ''">
+                <![CDATA[  and a.yaoshiliangyongyaocai_delete >= #{params.yaoshiliangyongyaocaiDeleteStart}   ]]>
+            </if>
+            <if test="params.yaoshiliangyongyaocaiDeleteEnd != null and params.yaoshiliangyongyaocaiDeleteEnd != ''">
+                <![CDATA[  and a.yaoshiliangyongyaocai_delete <= #{params.yaoshiliangyongyaocaiDeleteEnd}   ]]>
+            </if>
+             <if test="params.yaoshiliangyongyaocaiDelete != null and params.yaoshiliangyongyaocaiDelete != ''">
+                and a.yaoshiliangyongyaocai_delete = #{params.yaoshiliangyongyaocaiDelete}
+             </if>
+
+        </where>
+
+        order by a.${params.orderBy} desc 
+    </select>
+
+</mapper>

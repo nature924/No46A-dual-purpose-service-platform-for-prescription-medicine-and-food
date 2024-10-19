@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.YaoshiliangyongyaocaiCollectionDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.yaoshiliangyongyaocai_id as yaoshiliangyongyaocaiId
+        ,a.yonghu_id as yonghuId
+        ,a.yaoshiliangyongyaocai_collection_types as yaoshiliangyongyaocaiCollectionTypes
+        ,a.insert_time as insertTime
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.YaoshiliangyongyaocaiCollectionView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+        ,yaoshiliangyongyaocai.yaoshiliangyongyaocai_uuid_number as yaoshiliangyongyaocaiUuidNumber
+        ,yaoshiliangyongyaocai.yaoshiliangyongyaocai_name as yaoshiliangyongyaocaiName
+        ,yaoshiliangyongyaocai.yaoshiliangyongyaocai_photo as yaoshiliangyongyaocaiPhoto
+        ,yaoshiliangyongyaocai.yaoshiliangyongyaocai_types as yaoshiliangyongyaocaiTypes
+        ,yaoshiliangyongyaocai.yaoshiliangyongyaocai_gongxiao as yaoshiliangyongyaocaiGongxiao
+        ,yaoshiliangyongyaocai.yaoshiliangyongyaocai_clicknum as yaoshiliangyongyaocaiClicknum
+        ,yaoshiliangyongyaocai.yaoshiliangyongyaocai_content as yaoshiliangyongyaocaiContent
+        ,yaoshiliangyongyaocai.shangxia_types as shangxiaTypes
+        ,yaoshiliangyongyaocai.yaoshiliangyongyaocai_delete as yaoshiliangyongyaocaiDelete
+        ,yonghu.yonghu_name as yonghuName
+        ,yonghu.yonghu_phone as yonghuPhone
+        ,yonghu.yonghu_id_number as yonghuIdNumber
+        ,yonghu.yonghu_photo as yonghuPhoto
+        ,yonghu.yonghu_email as yonghuEmail
+
+        FROM yaoshiliangyongyaocai_collection  a
+        left JOIN yaoshiliangyongyaocai yaoshiliangyongyaocai ON a.yaoshiliangyongyaocai_id = yaoshiliangyongyaocai.id
+        left JOIN yonghu yonghu ON a.yonghu_id = yonghu.id
+
+        <where>
+            <if test="params.ids != null">
+                and a.id in
+                <foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+            <if test="params.yaoshiliangyongyaocaiId != null and params.yaoshiliangyongyaocaiId != ''">
+                and (
+                    a.yaoshiliangyongyaocai_id = #{params.yaoshiliangyongyaocaiId}
+                )
+            </if>
+            <if test="params.yonghuId != null and params.yonghuId != ''">
+                and (
+                    a.yonghu_id = #{params.yonghuId}
+                )
+            </if>
+            <if test="params.yaoshiliangyongyaocaiCollectionTypes != null and params.yaoshiliangyongyaocaiCollectionTypes != ''">
+                and a.yaoshiliangyongyaocai_collection_types = #{params.yaoshiliangyongyaocaiCollectionTypes}
+            </if>
+            <if test=" params.insertTimeStart != '' and params.insertTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) >= UNIX_TIMESTAMP(#{params.insertTimeStart}) ]]>
+            </if>
+            <if test=" params.insertTimeEnd != '' and params.insertTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) <= UNIX_TIMESTAMP(#{params.insertTimeEnd}) ]]>
+            </if>
+
+                <!-- 判断药食两用药材的id不为空 -->
+            <if test=" params.yaoshiliangyongyaocaiIdNotNull != '' and params.yaoshiliangyongyaocaiIdNotNull != null and params.yaoshiliangyongyaocaiIdNotNull != 'null' ">
+                and a.yaoshiliangyongyaocai_id IS NOT NULL
+            </if>
+            <if test=" params.yaoshiliangyongyaocaiUuidNumber != '' and params.yaoshiliangyongyaocaiUuidNumber != null and params.yaoshiliangyongyaocaiUuidNumber != 'null' ">
+                and yaoshiliangyongyaocai.yaoshiliangyongyaocai_uuid_number like CONCAT('%',#{params.yaoshiliangyongyaocaiUuidNumber},'%')
+            </if>
+            <if test=" params.yaoshiliangyongyaocaiName != '' and params.yaoshiliangyongyaocaiName != null and params.yaoshiliangyongyaocaiName != 'null' ">
+                and yaoshiliangyongyaocai.yaoshiliangyongyaocai_name like CONCAT('%',#{params.yaoshiliangyongyaocaiName},'%')
+            </if>
+            <if test="params.yaoshiliangyongyaocaiTypes != null  and params.yaoshiliangyongyaocaiTypes != ''">
+                and yaoshiliangyongyaocai.yaoshiliangyongyaocai_types = #{params.yaoshiliangyongyaocaiTypes}
+            </if>
+
+            <if test=" params.yaoshiliangyongyaocaiGongxiao != '' and params.yaoshiliangyongyaocaiGongxiao != null and params.yaoshiliangyongyaocaiGongxiao != 'null' ">
+                and yaoshiliangyongyaocai.yaoshiliangyongyaocai_gongxiao like CONCAT('%',#{params.yaoshiliangyongyaocaiGongxiao},'%')
+            </if>
+            <if test="params.yaoshiliangyongyaocaiClicknumStart != null  and params.yaoshiliangyongyaocaiClicknumStart != '' ">
+                <![CDATA[  and yaoshiliangyongyaocai.yaoshiliangyongyaocai_clicknum >= #{params.yaoshiliangyongyaocaiClicknumStart}   ]]>
+            </if>
+            <if test="params.yaoshiliangyongyaocaiClicknumEnd != null  and params.yaoshiliangyongyaocaiClicknumEnd != '' ">
+                <![CDATA[  and yaoshiliangyongyaocai.yaoshiliangyongyaocai_clicknum <= #{params.yaoshiliangyongyaocaiClicknumEnd}   ]]>
+            </if>
+            <if test="params.yaoshiliangyongyaocaiClicknum != null  and params.yaoshiliangyongyaocaiClicknum != '' ">
+                and yaoshiliangyongyaocai.yaoshiliangyongyaocai_clicknum = #{params.yaoshiliangyongyaocaiClicknum}
+            </if>
+            <if test=" params.yaoshiliangyongyaocaiContent != '' and params.yaoshiliangyongyaocaiContent != null and params.yaoshiliangyongyaocaiContent != 'null' ">
+                and yaoshiliangyongyaocai.yaoshiliangyongyaocai_content like CONCAT('%',#{params.yaoshiliangyongyaocaiContent},'%')
+            </if>
+            <if test="params.shangxiaTypes != null  and params.shangxiaTypes != ''">
+                and yaoshiliangyongyaocai.shangxia_types = #{params.shangxiaTypes}
+            </if>
+
+            <if test="params.yaoshiliangyongyaocaiDeleteStart != null  and params.yaoshiliangyongyaocaiDeleteStart != '' ">
+                <![CDATA[  and yaoshiliangyongyaocai.yaoshiliangyongyaocai_delete >= #{params.yaoshiliangyongyaocaiDeleteStart}   ]]>
+            </if>
+            <if test="params.yaoshiliangyongyaocaiDeleteEnd != null  and params.yaoshiliangyongyaocaiDeleteEnd != '' ">
+                <![CDATA[  and yaoshiliangyongyaocai.yaoshiliangyongyaocai_delete <= #{params.yaoshiliangyongyaocaiDeleteEnd}   ]]>
+            </if>
+            <if test="params.yaoshiliangyongyaocaiDelete != null  and params.yaoshiliangyongyaocaiDelete != '' ">
+                and yaoshiliangyongyaocai.yaoshiliangyongyaocai_delete = #{params.yaoshiliangyongyaocaiDelete}
+            </if>
+                <!-- 判断用户的id不为空 -->
+            <if test=" params.yonghuIdNotNull != '' and params.yonghuIdNotNull != null and params.yonghuIdNotNull != 'null' ">
+                and a.yonghu_id IS NOT NULL
+            </if>
+            <if test=" params.yonghuName != '' and params.yonghuName != null and params.yonghuName != 'null' ">
+                and yonghu.yonghu_name like CONCAT('%',#{params.yonghuName},'%')
+            </if>
+            <if test=" params.yonghuPhone != '' and params.yonghuPhone != null and params.yonghuPhone != 'null' ">
+                and yonghu.yonghu_phone like CONCAT('%',#{params.yonghuPhone},'%')
+            </if>
+            <if test=" params.yonghuIdNumber != '' and params.yonghuIdNumber != null and params.yonghuIdNumber != 'null' ">
+                and yonghu.yonghu_id_number like CONCAT('%',#{params.yonghuIdNumber},'%')
+            </if>
+            <if test=" params.yonghuEmail != '' and params.yonghuEmail != null and params.yonghuEmail != 'null' ">
+                and yonghu.yonghu_email like CONCAT('%',#{params.yonghuEmail},'%')
+            </if>
+        </where>
+
+        order by a.${params.orderBy} desc 
+    </select>
+
+</mapper>

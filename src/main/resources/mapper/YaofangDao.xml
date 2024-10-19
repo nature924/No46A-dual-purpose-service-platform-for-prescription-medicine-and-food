@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.YaofangDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.yaofang_uuid_number as yaofangUuidNumber
+        ,a.yaofang_name as yaofangName
+        ,a.yaofang_photo as yaofangPhoto
+        ,a.yaofang_types as yaofangTypes
+        ,a.yaofang_laiyuan as yaofangLaiyuan
+        ,a.yaofang_zuozhe as yaofangZuozhe
+        ,a.yaofang_chengshuniandai as yaofangChengshuniandai
+        ,a.yaofang_text as yaofangText
+        ,a.yaofang_zucheng as yaofangZucheng
+        ,a.yaofang_yaoshiliangyong as yaofangYaoshiliangyong
+        ,a.yaofang_gongxiao as yaofangGongxiao
+        ,a.yaofang_zhuzhizheng as yaofangZhuzhizheng
+        ,a.yaofang_zhengzhuang as yaofangZhengzhuang
+        ,a.yaofang_yongfa as yaofangYongfa
+        ,a.jixing_types as jixingTypes
+        ,a.yaofang_yinjing as yaofangYinjing
+        ,a.yaofang_clicknum as yaofangClicknum
+        ,a.yaofang_content as yaofangContent
+        ,a.shangxia_types as shangxiaTypes
+        ,a.yaofang_delete as yaofangDelete
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.YaofangView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+
+        FROM yaofang  a
+
+        <where>
+            <if test="params.ids != null">
+                and a.id in
+                <foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+            <if test=" params.yaofangUuidNumber != '' and params.yaofangUuidNumber != null and params.yaofangUuidNumber != 'null' ">
+                and a.yaofang_uuid_number like CONCAT('%',#{params.yaofangUuidNumber},'%')
+            </if>
+            <if test=" params.yaofangName != '' and params.yaofangName != null and params.yaofangName != 'null' ">
+                and a.yaofang_name like CONCAT('%',#{params.yaofangName},'%')
+            </if>
+            <if test="params.yaofangTypes != null and params.yaofangTypes != ''">
+                and a.yaofang_types = #{params.yaofangTypes}
+            </if>
+            <if test=" params.yaofangLaiyuan != '' and params.yaofangLaiyuan != null and params.yaofangLaiyuan != 'null' ">
+                and a.yaofang_laiyuan like CONCAT('%',#{params.yaofangLaiyuan},'%')
+            </if>
+            <if test=" params.yaofangZuozhe != '' and params.yaofangZuozhe != null and params.yaofangZuozhe != 'null' ">
+                and a.yaofang_zuozhe like CONCAT('%',#{params.yaofangZuozhe},'%')
+            </if>
+            <if test=" params.yaofangChengshuniandai != '' and params.yaofangChengshuniandai != null and params.yaofangChengshuniandai != 'null' ">
+                and a.yaofang_chengshuniandai like CONCAT('%',#{params.yaofangChengshuniandai},'%')
+            </if>
+            <if test=" params.yaofangText != '' and params.yaofangText != null and params.yaofangText != 'null' ">
+                and a.yaofang_text like CONCAT('%',#{params.yaofangText},'%')
+            </if>
+            <if test=" params.yaofangZucheng != '' and params.yaofangZucheng != null and params.yaofangZucheng != 'null' ">
+                and a.yaofang_zucheng like CONCAT('%',#{params.yaofangZucheng},'%')
+            </if>
+            <if test=" params.yaofangYaoshiliangyong != '' and params.yaofangYaoshiliangyong != null and params.yaofangYaoshiliangyong != 'null' ">
+                and a.yaofang_yaoshiliangyong like CONCAT('%',#{params.yaofangYaoshiliangyong},'%')
+            </if>
+            <if test=" params.yaofangGongxiao != '' and params.yaofangGongxiao != null and params.yaofangGongxiao != 'null' ">
+                and a.yaofang_gongxiao like CONCAT('%',#{params.yaofangGongxiao},'%')
+            </if>
+            <if test=" params.yaofangZhuzhizheng != '' and params.yaofangZhuzhizheng != null and params.yaofangZhuzhizheng != 'null' ">
+                and a.yaofang_zhuzhizheng like CONCAT('%',#{params.yaofangZhuzhizheng},'%')
+            </if>
+            <if test=" params.yaofangZhengzhuang != '' and params.yaofangZhengzhuang != null and params.yaofangZhengzhuang != 'null' ">
+                and a.yaofang_zhengzhuang like CONCAT('%',#{params.yaofangZhengzhuang},'%')
+            </if>
+            <if test=" params.yaofangYongfa != '' and params.yaofangYongfa != null and params.yaofangYongfa != 'null' ">
+                and a.yaofang_yongfa like CONCAT('%',#{params.yaofangYongfa},'%')
+            </if>
+            <if test="params.jixingTypes != null and params.jixingTypes != ''">
+                and a.jixing_types = #{params.jixingTypes}
+            </if>
+            <if test=" params.yaofangYinjing != '' and params.yaofangYinjing != null and params.yaofangYinjing != 'null' ">
+                and a.yaofang_yinjing like CONCAT('%',#{params.yaofangYinjing},'%')
+            </if>
+            <if test="params.yaofangClicknumStart != null and params.yaofangClicknumStart != ''">
+                <![CDATA[  and a.yaofang_clicknum >= #{params.yaofangClicknumStart}   ]]>
+            </if>
+            <if test="params.yaofangClicknumEnd != null and params.yaofangClicknumEnd != ''">
+                <![CDATA[  and a.yaofang_clicknum <= #{params.yaofangClicknumEnd}   ]]>
+            </if>
+             <if test="params.yaofangClicknum != null and params.yaofangClicknum != ''">
+                and a.yaofang_clicknum = #{params.yaofangClicknum}
+             </if>
+            <if test=" params.yaofangContent != '' and params.yaofangContent != null and params.yaofangContent != 'null' ">
+                and a.yaofang_content like CONCAT('%',#{params.yaofangContent},'%')
+            </if>
+            <if test="params.shangxiaTypes != null and params.shangxiaTypes != ''">
+                and a.shangxia_types = #{params.shangxiaTypes}
+            </if>
+            <if test="params.yaofangDeleteStart != null and params.yaofangDeleteStart != ''">
+                <![CDATA[  and a.yaofang_delete >= #{params.yaofangDeleteStart}   ]]>
+            </if>
+            <if test="params.yaofangDeleteEnd != null and params.yaofangDeleteEnd != ''">
+                <![CDATA[  and a.yaofang_delete <= #{params.yaofangDeleteEnd}   ]]>
+            </if>
+             <if test="params.yaofangDelete != null and params.yaofangDelete != ''">
+                and a.yaofang_delete = #{params.yaofangDelete}
+             </if>
+
+        </where>
+
+        order by a.${params.orderBy} desc 
+    </select>
+
+</mapper>
